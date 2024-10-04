@@ -1,4 +1,4 @@
-FROM debian:12.6-slim
+FROM golang:1.22.8-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && update-ca-certificates && \
     addgroup --system --gid 127 docker && adduser --uid 1001 --gid 127 --disabled-password runner
