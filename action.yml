@@ -1,0 +1,79 @@
+name: k6dist
+description: k6 distribution builder
+author: Grafana Labs
+
+branding:
+  icon: archive
+  color: orange
+
+inputs:
+  in:
+    description: input file name
+    required: true
+
+  distro_name:
+    description: distro name
+    required: false
+
+  distro_version:
+    description: distro version
+    required: false
+
+  platform:
+    description: list of target platforms
+    required: false
+
+  executable:
+    description: executable file name template
+    required: false
+
+  archive:
+    description: archive file name template
+    required: false
+
+  docker:
+    description: generated Dockerfile name template
+    required: false
+
+  docker_template:
+    description: template for the generated Dockerfile
+    required: false
+
+  notes:
+    description: generated release notes file name template
+    required: false
+
+  notes_template:
+    description: template for the generated release notes
+    required: false
+
+  notes_latest:
+    description: latest release notes file for change detection
+    required: false
+
+  readme:
+    description: readme file to be added to the archive
+    required: false
+
+  license:
+    description: license file to be added to the archive
+    required: false
+
+  verbose:
+    description: enable verbose logging
+    required: false
+
+  quiet:
+    description: isable normal logging
+    required: false
+
+outputs:
+  changed:
+    description: "true if the release has changed compared to notes_latest"
+
+  version:
+    description: "the distro release version"
+
+runs:
+  using: docker
+  image: docker://ghcr.io/grafana/k6dist:v0
