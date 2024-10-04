@@ -1,0 +1,806 @@
+[
+  {
+    "categories": [
+      "observability"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "Test Prometheus Remote Write performance",
+    "imports": [
+      "k6/x/remotewrite"
+    ],
+    "module": "github.com/grafana/xk6-client-prometheus-remote",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-client-prometheus-remote.git",
+      "description": "A k6 extension for testing Prometheus Remote Write endpoints",
+      "homepage": "https://github.com/grafana/xk6-client-prometheus-remote",
+      "license": "Apache-2.0",
+      "name": "xk6-client-prometheus-remote",
+      "owner": "grafana",
+      "public": true,
+      "stars": 24,
+      "timestamp": 1718976971,
+      "topics": [
+        "prometheus",
+        "remote-write",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-client-prometheus-remote"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.3.2",
+      "v0.3.1",
+      "v0.3.0",
+      "v0.2.4",
+      "v0.2.3",
+      "v0.2.2",
+      "v0.2.1",
+      "v0.2.0",
+      "v0.1.0",
+      "v0.0.3",
+      "v0.0.2",
+      "v0.0.1"
+    ]
+  },
+  {
+    "categories": [
+      "reporting",
+      "observability"
+    ],
+    "compliance": {
+      "grade": "C",
+      "level": 80
+    },
+    "description": "Create a web-based metrics dashboard",
+    "module": "github.com/grafana/xk6-dashboard",
+    "outputs": [
+      "dashboard"
+    ],
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-dashboard.git",
+      "description": "A k6 extension that makes k6 metrics available on a web-based dashboard.",
+      "homepage": "https://github.com/grafana/xk6-dashboard",
+      "license": "AGPL-3.0",
+      "name": "xk6-dashboard",
+      "owner": "grafana",
+      "public": true,
+      "stars": 345,
+      "timestamp": 1719907965,
+      "topics": [
+        "xk6",
+        "xk6-official",
+        "xk6-output-dashboard"
+      ],
+      "url": "https://github.com/grafana/xk6-dashboard"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.7.5",
+      "v0.7.4",
+      "v0.7.3",
+      "v0.7.3-alpha.1",
+      "v0.7.2",
+      "v0.7.1",
+      "v0.7.0",
+      "v0.7.0-apha.3",
+      "v0.7.0-alpha.5",
+      "v0.7.0-alpha.4",
+      "v0.7.0-alpha.3",
+      "v0.7.0-alpha.2",
+      "v0.7.0-alpha.1",
+      "v0.6.1",
+      "v0.6.0",
+      "v0.5.5",
+      "v0.5.4",
+      "v0.5.3",
+      "v0.5.2",
+      "v0.5.1",
+      "v0.5.0",
+      "v0.4.4",
+      "v0.4.3",
+      "v0.4.2",
+      "v0.4.1",
+      "v0.4.0",
+      "v0.3.2",
+      "v0.3.1",
+      "v0.3.0",
+      "v0.2.0",
+      "v0.1.3",
+      "v0.1.2",
+      "v0.1.1",
+      "v0.1.0"
+    ]
+  },
+  {
+    "categories": [
+      "kubernetes"
+    ],
+    "compliance": {
+      "grade": "C",
+      "level": 80
+    },
+    "description": "Inject faults to test 💣",
+    "imports": [
+      "k6/x/disruptor"
+    ],
+    "module": "github.com/grafana/xk6-disruptor",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-disruptor.git",
+      "description": "Extension for injecting faults into k6 tests",
+      "homepage": "https://k6.io/docs/javascript-api/xk6-disruptor/",
+      "license": "AGPL-3.0",
+      "name": "xk6-disruptor",
+      "owner": "grafana",
+      "public": true,
+      "stars": 93,
+      "timestamp": 1728033717,
+      "topics": [
+        "chaos-engineering",
+        "fault-injection",
+        "k6",
+        "testing",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-disruptor"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.3.12",
+      "v0.3.11",
+      "v0.3.10",
+      "v0.3.9",
+      "v0.3.8",
+      "v0.3.7",
+      "v0.3.6",
+      "v0.3.5",
+      "v0.3.5-rc2",
+      "v0.3.5-rc1",
+      "v0.3.4",
+      "v0.3.3",
+      "v0.3.2",
+      "v0.3.1",
+      "v0.3.0",
+      "v0.2.1",
+      "v0.2.0",
+      "v0.1.3",
+      "v0.1.2",
+      "v0.1.1",
+      "v0.1.0"
+    ]
+  },
+  {
+    "categories": [
+      "misc"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "Run external commands",
+    "imports": [
+      "k6/x/exec"
+    ],
+    "module": "github.com/grafana/xk6-exec",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-exec.git",
+      "description": "A k6 extension for running external commands. ",
+      "homepage": "https://github.com/grafana/xk6-exec",
+      "license": "Apache-2.0",
+      "name": "xk6-exec",
+      "owner": "grafana",
+      "public": true,
+      "stars": 20,
+      "timestamp": 1725464620,
+      "topics": [
+        "exec",
+        "k6",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-exec"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.4.1",
+      "v0.4.0",
+      "v0.3.0",
+      "v0.2.0",
+      "v0.1.0",
+      "v0.0.1"
+    ]
+  },
+  {
+    "categories": [
+      "data"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "Generate random fake data",
+    "imports": [
+      "k6/x/faker"
+    ],
+    "module": "github.com/grafana/xk6-faker",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-faker.git",
+      "description": "Random fake data generator for k6.",
+      "homepage": "https://faker.x.k6.io",
+      "license": "AGPL-3.0",
+      "name": "xk6-faker",
+      "owner": "grafana",
+      "public": true,
+      "stars": 56,
+      "timestamp": 1725533453,
+      "topics": [
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-faker"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.4.0",
+      "v0.3.1",
+      "v0.3.0",
+      "v0.3.0-alpha.1",
+      "v0.2.2",
+      "v0.2.1",
+      "v0.2.0",
+      "v0.1.0"
+    ]
+  },
+  {
+    "categories": [
+      "kubernetes"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "Interact with Kubernetes clusters",
+    "imports": [
+      "k6/x/kubernetes"
+    ],
+    "module": "github.com/grafana/xk6-kubernetes",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-kubernetes.git",
+      "description": "Client extension for interacting with Kubernetes clusters from your k6 tests.",
+      "homepage": "https://github.com/grafana/xk6-kubernetes",
+      "license": "Apache-2.0",
+      "name": "xk6-kubernetes",
+      "owner": "grafana",
+      "public": true,
+      "stars": 62,
+      "timestamp": 1722251942,
+      "topics": [
+        "kubernetes",
+        "kubernetes-client",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-kubernetes"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.10.0",
+      "v0.9.0",
+      "v0.8.0",
+      "v0.7.0",
+      "v0.6.0",
+      "v0.5.0",
+      "v0.4.0",
+      "v0.3.0",
+      "v0.2.2",
+      "v0.2.1",
+      "v0.2.0",
+      "v0.1.1",
+      "v0.1.0",
+      "v0.0.5",
+      "v0.0.4",
+      "v0.0.3",
+      "v0.0.2",
+      "v0.0.1"
+    ]
+  },
+  {
+    "categories": [
+      "observability",
+      "messaging"
+    ],
+    "compliance": {
+      "grade": "B",
+      "level": 92
+    },
+    "description": "Client for load testing Loki",
+    "imports": [
+      "k6/x/loki"
+    ],
+    "module": "github.com/grafana/xk6-loki",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-loki.git",
+      "description": "k6 extension for Loki",
+      "homepage": "https://github.com/grafana/xk6-loki",
+      "license": "Apache-2.0",
+      "name": "xk6-loki",
+      "owner": "grafana",
+      "public": true,
+      "stars": 38,
+      "timestamp": 1724212557,
+      "topics": [
+        "k6",
+        "loki",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-loki"
+    },
+    "tier": "official",
+    "versions": [
+      "v1.0.0"
+    ]
+  },
+  {
+    "categories": [
+      "reporting"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "Create notifications",
+    "imports": [
+      "k6/x/notification"
+    ],
+    "module": "github.com/grafana/xk6-notification",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-notification.git",
+      "description": "A k6 extension for creating notifications. ",
+      "homepage": "https://github.com/grafana/xk6-notification",
+      "license": "Apache-2.0",
+      "name": "xk6-notification",
+      "owner": "grafana",
+      "public": true,
+      "stars": 18,
+      "timestamp": 1718008202,
+      "topics": [
+        "k6",
+        "k6-extension",
+        "shoutrrr",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-notification"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.1.2",
+      "v0.1.1",
+      "v0.1.0"
+    ]
+  },
+  {
+    "categories": [
+      "data"
+    ],
+    "compliance": {
+      "grade": "C",
+      "level": 80
+    },
+    "description": "Export results to InfluxDB v2",
+    "module": "github.com/grafana/xk6-output-influxdb",
+    "outputs": [
+      "xk6-influxdb"
+    ],
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-output-influxdb.git",
+      "description": "k6 extension to output real-time test metrics to an InfluxDB 2.x database.",
+      "homepage": "https://github.com/grafana/xk6-output-influxdb",
+      "license": "Apache-2.0",
+      "name": "xk6-output-influxdb",
+      "owner": "grafana",
+      "public": true,
+      "stars": 62,
+      "timestamp": 1724921925,
+      "topics": [
+        "grafana-dashboard",
+        "influxdb",
+        "k6",
+        "k6-output",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-output-influxdb"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.5.0",
+      "v0.4.3",
+      "v0.4.2",
+      "v0.4.1",
+      "v0.4.0",
+      "v0.3.0",
+      "v0.2.2",
+      "v0.2.1",
+      "v0.2.0",
+      "v0.1.0"
+    ]
+  },
+  {
+    "categories": [
+      "reporting",
+      "messaging"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "Export k6 results in real-time to Kafka",
+    "module": "github.com/grafana/xk6-output-kafka",
+    "outputs": [
+      "xk6-kafka"
+    ],
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-output-kafka.git",
+      "description": "k6 extension to output real-time test metrics to a Kafka topic.",
+      "homepage": "https://github.com/grafana/xk6-output-kafka",
+      "license": "Apache-2.0",
+      "name": "xk6-output-kafka",
+      "owner": "grafana",
+      "public": true,
+      "stars": 21,
+      "timestamp": 1718012070,
+      "topics": [
+        "k6",
+        "k6-output",
+        "kafka",
+        "kafka-streams",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-output-kafka"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.7.1",
+      "v0.7.0",
+      "v0.6.0",
+      "v0.5.0",
+      "v0.4.1",
+      "v0.4.0",
+      "v0.3.0",
+      "v0.2.0",
+      "v0.1.1",
+      "v0.1.0"
+    ]
+  },
+  {
+    "categories": [
+      "reporting",
+      "observability"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "Export k6 results in OpenTelemetry format",
+    "module": "github.com/grafana/xk6-output-opentelemetry",
+    "outputs": [
+      "opentelemetry"
+    ],
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-output-opentelemetry.git",
+      "description": "A k6 extension to output real-time test metrics in OpenTelemetry format.",
+      "homepage": "https://github.com/grafana/xk6-output-opentelemetry",
+      "license": "AGPL-3.0",
+      "name": "xk6-output-opentelemetry",
+      "owner": "grafana",
+      "public": true,
+      "stars": 11,
+      "timestamp": 1725275530,
+      "topics": [
+        "k6",
+        "k6-output",
+        "opentelemetry",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-output-opentelemetry"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.2.0",
+      "v0.1.1",
+      "v0.1.0"
+    ]
+  },
+  {
+    "categories": [
+      "reporting",
+      "data"
+    ],
+    "compliance": {
+      "grade": "C",
+      "level": 80
+    },
+    "description": "Export k6 results to TimescaleDB",
+    "module": "github.com/grafana/xk6-output-timescaledb",
+    "outputs": [
+      "timescaledb"
+    ],
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-output-timescaledb.git",
+      "description": "k6 extension to output real-time test metrics to TimescaleDB.",
+      "homepage": "https://github.com/grafana/xk6-output-timescaledb",
+      "license": "Apache-2.0",
+      "name": "xk6-output-timescaledb",
+      "owner": "grafana",
+      "public": true,
+      "stars": 30,
+      "timestamp": 1718012137,
+      "topics": [
+        "grafana-dashboard",
+        "k6",
+        "k6-output",
+        "timescaledb",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-output-timescaledb"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.2.1",
+      "v0.2.0",
+      "v0.1.1",
+      "v0.1.0",
+      "v0.0.4",
+      "v0.0.3",
+      "v0.0.2",
+      "v0.0.1"
+    ]
+  },
+  {
+    "categories": [
+      "data"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "Load-test SQL Servers",
+    "imports": [
+      "k6/x/sql"
+    ],
+    "module": "github.com/grafana/xk6-sql",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-sql.git",
+      "description": "k6 extension to load test RDBMSs (PostgreSQL, MySQL, MS SQL and SQLite3)",
+      "homepage": "https://github.com/grafana/xk6-sql",
+      "license": "Apache-2.0",
+      "name": "xk6-sql",
+      "owner": "grafana",
+      "public": true,
+      "stars": 111,
+      "timestamp": 1725979901,
+      "topics": [
+        "k6",
+        "sql",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-sql"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.4.1",
+      "v0.4.0",
+      "v0.3.0",
+      "v0.2.1",
+      "v0.2.0",
+      "v0.1.1",
+      "v0.1.0",
+      "v0.0.1"
+    ]
+  },
+  {
+    "categories": [
+      "misc"
+    ],
+    "compliance": {
+      "grade": "A",
+      "level": 100
+    },
+    "description": "SSH",
+    "imports": [
+      "k6/x/ssh"
+    ],
+    "module": "github.com/grafana/xk6-ssh",
+    "products": [
+      "oss"
+    ],
+    "repo": {
+      "clone_url": "https://github.com/grafana/xk6-ssh.git",
+      "description": "Client extension for interacting with a host over SSH as part of your k6 test.",
+      "homepage": "https://github.com/grafana/xk6-ssh",
+      "license": "Apache-2.0",
+      "name": "xk6-ssh",
+      "owner": "grafana",
+      "public": true,
+      "stars": 9,
+      "timestamp": 1718011915,
+      "topics": [
+        "ssh",
+        "ssh-client",
+        "xk6"
+      ],
+      "url": "https://github.com/grafana/xk6-ssh"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.1.1",
+      "v0.1.0",
+      "v0.0.1"
+    ]
+  },
+  {
+    "categories": [
+      "misc"
+    ],
+    "description": "A modern load testing tool, using Go and JavaScript",
+    "imports": [
+      "k6"
+    ],
+    "module": "go.k6.io/k6",
+    "products": [
+      "cloud",
+      "synthetic",
+      "oss"
+    ],
+    "repo": {
+      "description": "A modern load testing tool, using Go and JavaScript - https://k6.io",
+      "homepage": "https://github.com/grafana/k6",
+      "license": "AGPL-3.0",
+      "name": "k6",
+      "owner": "grafana",
+      "public": true,
+      "topics": [
+        "es6",
+        "go",
+        "golang",
+        "hacktoberfest",
+        "javascript",
+        "load-generator",
+        "load-testing",
+        "performance"
+      ],
+      "url": "https://github.com/grafana/k6"
+    },
+    "tier": "official",
+    "versions": [
+      "v0.54.0",
+      "v0.53.0",
+      "v0.52.0",
+      "v0.51.0",
+      "v0.50.0",
+      "v0.49.0",
+      "v0.48.0",
+      "v0.47.0",
+      "v0.46.0",
+      "v0.45.1",
+      "v0.45.0",
+      "v0.44.1",
+      "v0.44.0",
+      "v0.43.1",
+      "v0.43.0",
+      "v0.42.0",
+      "v0.41.0",
+      "v0.40.0",
+      "v0.39.0",
+      "v0.38.3",
+      "v0.38.2",
+      "v0.38.1",
+      "v0.38.0",
+      "v0.37.0",
+      "v0.36.0",
+      "v0.35.0",
+      "v0.34.1",
+      "v0.34.0",
+      "v0.33.0",
+      "v0.32.0",
+      "v0.31.1",
+      "v0.31.0",
+      "v0.30.0",
+      "v0.29.0",
+      "v0.28.0",
+      "v0.27.1",
+      "v0.27.0",
+      "v0.26.2",
+      "v0.26.1",
+      "v0.26.0",
+      "v0.25.1",
+      "v0.25.0",
+      "v0.24.0",
+      "v0.23.1",
+      "v0.23.0",
+      "v0.22.1",
+      "v0.22.0",
+      "v0.21.1",
+      "v0.21.0",
+      "v0.20.0",
+      "v0.19.0",
+      "v0.18.2",
+      "v0.18.1",
+      "v0.18.0",
+      "v0.17.2",
+      "v0.17.1",
+      "v0.17.0",
+      "v0.16.0",
+      "v0.15.0",
+      "v0.14.0",
+      "v0.13.0",
+      "v0.12.2",
+      "v0.12.1",
+      "v0.11.0",
+      "v0.10.0",
+      "v0.9.3",
+      "v0.9.2",
+      "v0.9.1",
+      "v0.9.0",
+      "v0.8.5",
+      "v0.8.4",
+      "v0.8.3",
+      "v0.8.2",
+      "v0.8.1",
+      "v0.8.0",
+      "v0.7.0",
+      "v0.6.0",
+      "v0.5.2",
+      "v0.5.1",
+      "v0.5.0",
+      "v0.4.5",
+      "v0.4.4",
+      "v0.4.3",
+      "v0.4.2",
+      "v0.4.1",
+      "v0.4.0",
+      "v0.3.0",
+      "v0.2.1",
+      "v0.2.0",
+      "v0.0.2",
+      "v0.0.1"
+    ]
+  }
+]

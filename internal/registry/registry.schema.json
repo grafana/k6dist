@@ -1,0 +1,385 @@
+{
+  "$id": "https://registry.k6.io/registry.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$ref": "#/$defs/registry",
+  "$defs": {
+    "registry": {
+      "description": "k6 Extension Registry.\n\nThe k6 extension registry contains the most important properties of registered extensions.\n",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/extension"
+      }
+    },
+    "catalog": {
+      "description": "k6 Extension Catalog.\n\nThe k6 extension catalog is an alternative representation of the k6 extension registry.\nThe catalog stores the extension data in an associative array (object),\nwhere the key is the import path for JavaScript extensions, and the output name for output extensions.\nThis data structure is optimized to resolve extensions as dependencies.\n",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/extension"
+      }
+    },
+    "extension": {
+      "type": "object",
+      "description": "Properties of the registered k6 extension.\n\nOnly those properties of the extensions are registered, which either cannot be detected automatically, or delegation to the extension is not allowed.\n\nProperties that are available using the repository manager API are intentionally not registered.\n\nThe string like properties that are included in the generated Grafana documentation are intentionally not accessed via the API of the repository manager. It is not allowed to inject arbitrary text into the Grafana documentation site without approval. Therefore, these properties are registered (eg `description`)\n",
+      "properties": {
+        "module": {
+          "type": "string",
+          "description": "The extension's go module path.\n\nThis is the unique identifier of the extension.\nMore info about module paths: https://go.dev/ref/mod#module-path\n\nThe extension has no name property, the module path or part of it can be used as the extension name. For example, using the first two elements of the module path after the host name, the name `grafana/xk6-dashboard` can be formed from the module path `github.com/grafana/xk6-dashboard`. This is typically the repository owner name and the repository name in the repository manager.\n\nThe extension has no URL property, a URL can be created from the module path that refers to the extension within the repository manager.\n",
+          "examples": [
+            "github.com/grafana/xk6-dashboard",
+            "github.com/szkiba/xk6-top"
+          ]
+        },
+        "imports": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^k6/x/"
+          },
+          "description": "List of JavaScript import paths registered by the extension.\n\nCurrently, paths must start with the prefix `k6/x/`.\n\nThe extensions used by k6 scripts are automatically detected based on the values specified here, therefore it is important that the values used here are consistent with the values registered by the extension at runtime.\n",
+          "examples": [
+            [
+              "k6/x/csv",
+              "k6/x/csv/stream"
+            ],
+            [
+              "k6/x/toml"
+            ]
+          ]
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of output names registered by the extension.\n\nThe extensions used by k6 scripts are automatically detected based on the values specified here, therefore it is important that the values used here are consistent with the values registered by the extension at runtime.\n",
+          "examples": [
+            [
+              "dashboard"
+            ],
+            [
+              "plugin"
+            ]
+          ]
+        },
+        "description": {
+          "type": "string",
+          "default": "",
+          "description": "Brief description of the extension.\n",
+          "examples": [
+            "This is a very cool extension, it displays the message 'Hello World!'"
+          ]
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of supported versions.\n\nVersions are tags whose format meets the requirements of semantic versioning. Version tags often start with the letter `v`, which is not part of the semantic version.\n",
+          "examples": [
+            [
+              "v0.1.0",
+              "v0.2.0",
+              "v0.2.1"
+            ]
+          ]
+        },
+        "cgo": {
+          "type": "boolean",
+          "default": false,
+          "description": "Flag indicating the need for cgo.\n\nThe `cgo` property value `true` indicates that cgo must be enabled to build the extension.\n"
+        },
+        "constraints": {
+          "type": "string",
+          "pattern": "[vxX*|,&\\^0-9.+-><=, ~]+",
+          "default": "",
+          "description": "Version constraints.\n\nVersion constraints are primarily used to filter automatically detected versions.\nIt can also be used to filter the versions property imported from the origin registry.\n",
+          "examples": [
+            [
+              ">=v0.4.0",
+              ">v0.50.0"
+            ]
+          ]
+        },
+        "repo": {
+          "$ref": "#/$defs/repository",
+          "description": "Repository metadata.\n\nMetadata provided by the extension's git repository manager. Repository metadata are not registered, they are queried at runtime using the repository manager API.\n"
+        },
+        "tier": {
+          "$ref": "#/$defs/tier",
+          "default": "community",
+          "description": "Maintainer of the extension.\n\nPossible values:\n\n  - official: Extensions owned, maintained, and designated by Grafana as \"official\"\n  - partner: Extensions written, maintained, validated, and published by third-party companies against their own projects.\n  - community: Extensions are listed on the Registry by individual maintainers, groups of maintainers, or other members of the k6 community.\n\nExtensions owned by the `grafana` GitHub organization are not officially supported by Grafana by default.\nThere are several k6 extensions owned by the `grafana` GitHub organization, which were created for experimental or example purposes only.\nThe `official` tier value is needed so that officially supported extensions can be distinguished from them.\n\nIf it is missing from the registry source, it will be set with the default \"community\" value during generation.\n",
+          "examples": [
+            "community",
+            "official"
+          ]
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/product"
+          },
+          "description": "Products in which the extension can be used.\n\nSome extensions are not available in all k6 products.\nThis may be for a technological or business reason, or the functionality of the extension may not make sense in the given product.\n\nPossible values:\n\n  - oss: Extensions are available in k6 OSS\n  - cloud: Extensions are available in Grafana Cloud k6\n  - synthetic: Extensions are available in Grafana Synthetic Monitoring\n\nIf the property is missing or empty in the source of the registry, it means that the extension is only available in the k6 OSS product.\nIn this case, the registry will be filled in accordingly during generation.\n",
+          "examples": [
+            [
+              "cloud",
+              "synthetic",
+              "oss"
+            ],
+            [
+              "cloud"
+            ],
+            [
+              "oss"
+            ]
+          ]
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/category"
+          },
+          "description": "The categories to which the extension belongs.\n\nIf the property is missing or empty in the registry source, the default value is `[\"misc\"]`.\n",
+          "examples": [
+            [
+              "data",
+              "reporting"
+            ],
+            [
+              "observability",
+              "protocol"
+            ]
+          ]
+        },
+        "compliance": {
+          "$ref": "#/$defs/compliance",
+          "description": "The result of the extension's k6 compliance checks.\n"
+        }
+      },
+      "required": [
+        "module"
+      ],
+      "additionalProperties": false
+    },
+    "compliance": {
+      "description": "The result of the extension's k6 compliance checks.\n",
+      "type": "object",
+      "required": [
+        "grade",
+        "level"
+      ],
+      "properties": {
+        "level": {
+          "description": "Compliance expressed as a percentage.\n\nThe `level` property contains a percentage of how well the extension complies with best practices.\nThe value of the `level` can be between `0-100` and is determined by the weighted and normalized sum of the scores of the compliance checks.\n",
+          "examples": [
+            87,
+            34,
+            100
+          ],
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "grade": {
+          "$ref": "#/$defs/grade",
+          "description": "Compliance expressed as a grade.\n\nThe `grade` property contains a grade (A-F) of how well the extension complies with best practices.\nThe value of the `grade` can be `A`,`B`,`C`,`D`,`E`,`F` and is calculated from the `level` property.\n",
+          "examples": [
+            "C",
+            "A"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "grade": {
+      "description": "The results of the checks are in the form of a grade.\n",
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "examples": [
+        "C",
+        "A"
+      ]
+    },
+    "repository": {
+      "type": "object",
+      "description": "Repository metadata.\n\nMetadata provided by the extension's git repository manager. Repository metadata are not registered, they are queried at runtime using the repository manager API.\n",
+      "required": [
+        "name",
+        "owner",
+        "url"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the repository.\n",
+          "examples": [
+            "xk6-dashboard",
+            "xk6-sql"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "description": "The owner of the repository.\n",
+          "examples": [
+            "grafana"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "description": "URL of the repository.\n\nThe URL is provided by the repository manager and can be displayed in a browser.\n",
+          "examples": [
+            "https://github.com/grafana/xk6-dashboard"
+          ]
+        },
+        "homepage": {
+          "type": "string",
+          "default": "",
+          "description": "The URL to the project homepage.\n\nIf no homepage is set, the value is the same as the url property.\n",
+          "examples": [
+            "https://github.com/grafana/xk6-dashboard"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "default": "",
+          "description": "Repository description.\n",
+          "examples": [
+            "This is a wonderful extension, it says 'Hello Wonderful World!'"
+          ]
+        },
+        "stars": {
+          "type": "integer",
+          "default": "0",
+          "description": "The number of stars in the extension's repository.\n\nThe extension's popularity is indicated by how many users have starred the extension's repository.\n",
+          "examples": [
+            365,
+            202
+          ]
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Repository topics.\n\nTopics make it easier to find the repository. It is recommended to set the xk6 topic to the extensions repository.\n",
+          "examples": [
+            [
+              "xk6",
+              "testing"
+            ],
+            [
+              "xk6"
+            ]
+          ]
+        },
+        "public": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Public repository flag.\n\nA `true` value indicates that the repository is public, available to anyone.\n",
+          "examples": [
+            true
+          ]
+        },
+        "license": {
+          "type": "string",
+          "default": "",
+          "description": "The SPDX ID of the extension's license.\n\nFor more information about SPDX, visit https://spdx.org/licenses/\n",
+          "examples": [
+            "AGPL-3.0-only",
+            "MIT"
+          ]
+        },
+        "archived": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Archived repository flag.\n\nA `true` value indicates that the repository is archived, read only.\n\nIf a repository is archived, it usually means that the owner has no intention of maintaining it. Such extensions should be removed from the registry.\n"
+        },
+        "timestamp": {
+          "type": "number",
+          "default": 0,
+          "description": "Last modification timestamp.\n\nThe timestamp property contains the timestamp of the last modification of the repository in UNIX time format (the number of non-leap seconds that have elapsed since 00:00:00 UTC on 1st January 1970).\nIts value depends on the repository manager, in the case of GitHub it contains the time of the last push operation, in the case of GitLab the time of the last repository activity.\n",
+          "examples": [
+            1725277028,
+            1690893368
+          ]
+        },
+        "clone_url": {
+          "type": "string",
+          "default": "",
+          "description": "URL for the git clone operation.\n\nThe clone_url property contains a (typically HTTP) URL, which is used to clone the repository.\n",
+          "examples": [
+            "https://github.com/grafana/xk6-dashboard.git",
+            "https://github.com/grafana/xk6-sql.git"
+          ]
+        }
+      }
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "official",
+        "partner",
+        "community"
+      ],
+      "description": "Maintainer of the extension.\n\nExtensions can be classified according to who maintains the extension.\nThis usually also specifies who the user can get support from.\n\nPossible values:\n\n  - official: Extensions owned, maintained, and designated by Grafana as \"official\"\n  - partner: Extensions written, maintained, validated, and published by third-party companies against their own projects.\n  - community: Extensions are listed on the Registry by individual maintainers, groups of maintainers, or other members of the k6 community.\n\nExtensions owned by the `grafana` GitHub organization are not officially supported by Grafana by default.\nThere are several k6 extensions owned by the `grafana` GitHub organization, which were created for experimental or example purposes only.\nThe `official` tier value is needed so that officially supported extensions can be distinguished from them.\n\nIf it is missing from the registry source, it will be set with the default `community` value during generation.\n",
+      "examples": [
+        "community",
+        "official"
+      ]
+    },
+    "product": {
+      "type": "string",
+      "enum": [
+        "oss",
+        "cloud",
+        "synthetic"
+      ],
+      "description": "Products in which the extension can be used.\n\nSome extensions are not available in all k6 products.\nThis may be for a technological or business reason, or the functionality of the extension may not make sense in the given product.\n\nPossible values:\n\n  - oss: Extensions are available in k6 OSS\n  - cloud: Extensions are available in Grafana Cloud k6\n  - synthetic: Extensions are available in Grafana Synthetic Monitoring\n\nIf it is missing from the registry source, it will be set with the default `[\"community\"]` value during generation.\n",
+      "examples": [
+        [
+          "cloud",
+          "synthetic",
+          "oss"
+        ],
+        [
+          "cloud"
+        ],
+        [
+          "oss"
+        ]
+      ]
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "authentication",
+        "browser",
+        "data",
+        "kubernetes",
+        "messaging",
+        "misc",
+        "observability",
+        "protocol",
+        "reporting"
+      ],
+      "description": "The categories to which the extension belongs.\n\nIf it is missing from the registry source, it will be set with the default `[\"misc\"]` value during generation.\n",
+      "examples": [
+        [
+          "data",
+          "reporting"
+        ],
+        [
+          "observability",
+          "protocol"
+        ]
+      ]
+    }
+  }
+}
