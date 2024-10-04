@@ -8,7 +8,7 @@ require (
 	github.com/grafana/k6foundry v0.2.0
 	github.com/samber/slog-logrus/v2 v2.5.0
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 )
 
 require (
