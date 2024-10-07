@@ -38,7 +38,7 @@ See the CLI [Flags](#flags) section for the default values ​​for these param
 
 name           | reqired | description
 ---------------|---------|-------------
-in             |    yes  | extension registry location (URL or file path)
+args           |    yes  | extension registry location (URL or file path)
 distro_name    |    no   | distro name
 distro_version |    no   | distro version
 platform       |    no   | list of target platforms
@@ -69,7 +69,7 @@ version | the distro release version
 - name: Build k6 distro
   uses: grafana/k6dist@v0.1.0
   with:
-    in: "https://registry.k6.io/product/cloud.json"
+    args: "https://registry.k6.io/product/cloud.json"
     notes_latest: "latest-release-notes.md"
 ```
 
