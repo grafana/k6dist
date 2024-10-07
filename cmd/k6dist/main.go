@@ -45,8 +45,6 @@ func newCmd(args []string, levelVar *slog.LevelVar) (*cobra.Command, error) {
 		return nil, err
 	}
 
-	slog.Debug("arguments", "args", args)
-
 	root.SetArgs(args)
 
 	return root, nil
