@@ -185,7 +185,9 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.tar.gz
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
           name: ${{ needs.build.outputs.version }}
           tag_name: ${{ needs.build.outputs.version }}
           body_path: ${{ env.NOTES }}
