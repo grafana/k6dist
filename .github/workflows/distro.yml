@@ -1,0 +1,235 @@
+# Reusable workflow for custom k6 distributions.
+#
+# This workflow releases a k6 distribution.
+# A new release is made if a new version of k6 or one or more of the extensions
+# has been released since the last distribution release.
+#
+# The distro release workflow should be scheduled once a day.
+# More than one distribution release cannot be made in one day,
+# because the release version is the date.
+#
+# Usage
+# -----
+#
+# The registry URL should be specified in the `source` input parameter.
+# All extensions in the registry will be embedded in k6.
+#
+# The name of the distribution should be specified in the `distro_name` input parameter.
+#
+# All other parameters are optional.
+#
+# ```
+# on:
+#  schedule:
+#    - cron: "0 0 * * *"
+#
+# jobs:
+#  distro:
+#    uses: grafana/k6dist/.github/workflows/distro.yml@main
+#    with:
+#      distro_name: my-custom-k6-distro
+#      source: https://example.com/my-custom-registry.json
+# ```
+#
+# In order to push the docker image(s) to GitHub Packages,
+# the docker target(s) should be specified in the `docker_target` parameter:
+#
+# ```
+# jobs:
+#  distro:
+#    uses: grafana/k6dist/.github/workflows/distro.yml@main
+#    with:
+#      distro_name: my-custom-k6-distro
+#      source: https://example.com/my-custom-registry.json
+#      docker_target: "release,with-browser"
+# ```
+#
+
+name: distro
+
+on:
+  workflow_call:
+    inputs:
+      args:
+        description: "source registry URL or path"
+        type: string
+        required: true
+
+      distro_name:
+        description: distro name
+        type: string
+        required: true
+
+      platform:
+        description: list of target platforms
+        type: string
+        required: false
+        default: "linux/amd64,darwin/amd64,windows/amd64"
+
+      docker_template:
+        description: template for the generated Dockerfile
+        type: string
+        required: false
+
+      notes_template:
+        description: template for the generated release notes
+        type: string
+        required: false
+
+      readme:
+        description: readme file to be added to the archive
+        type: string
+        required: false
+
+      license:
+        description: license file to be added to the archive
+        type: string
+        required: false
+
+      verbose:
+        description: enable verbose logging
+        type: string
+        required: false
+        default: "true"
+
+      quiet:
+        description: disable normal logging
+        type: string
+        required: false
+
+      docker_target:
+        description: list of docker targets (release or with-browser or release,with-browser)
+        type: string
+        required: false
+
+    outputs:
+      changed:
+        description: "true if the release has changed"
+        value: ${{ jobs.build.outputs.changed }}
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NOTES: "dist/release-notes.md"
+      NOTES_LATEST: "dist/release-notes-latest.md"
+
+    outputs:
+      changed: ${{ steps.build.outputs.changed }}
+      version: ${{ steps.build.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        run: |
+          mkdir -p dist
+
+      - name: Latest Release Notes
+        id: latest
+        run: |
+          if gh api /repos/${{github.repository}}/releases/tag/$(date +%y.%m.%d) > /dev/null 2>/dev/null; then
+             echo "today=true" >> "$GITHUB_OUTPUT"
+          else
+            if gh api --jq .body /repos/${{github.repository}}/releases/latest  > ${{env.NOTES_LATEST}}  2>/dev/null; then
+             echo "notes=${{env.NOTES_LATEST}}" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Build Distro
+        uses: grafana/k6dist@v0.1.5
+        if: ${{ steps.latest.outputs.today != 'true' }}
+        id: build
+        with:
+          args: "${{ inputs.args }}"
+          distro_name: "${{ inputs.distro_name }}"
+          platform: "${{ inputs.platform }}"
+          docker_template: "${{ inputs.docker_template }}"
+          notes: "${{ env.NOTES }}"
+          notes_template: "${{ inputs.notes_template }}"
+          notes_latest: "${{ steps.latest.outputs.notes }}"
+          readme: "${{ inputs.readme }}"
+          license: "${{ inputs.license }}"
+          verbose: "${{ inputs.verbose }}"
+          quiet: "${{ inputs.quiet }}"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ github.ref_name == 'main' && steps.build.outputs.changed == 'true'  }}
+        with:
+          path: "dist"
+          name: "dist"
+          overwrite: true
+
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    if: ${{  github.ref_name == 'main' && needs.build.outputs.changed == 'true' }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NOTES: "dist/release-notes.md"
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: "dist"
+          name: "dist"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.tar.gz
+          name: ${{ needs.build.outputs.version }}
+          tag_name: ${{ needs.build.outputs.version }}
+          body_path: ${{ env.NOTES }}
+          make_latest: "true"
+
+  docker:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - release
+    if: ${{  github.ref_name == 'main' && needs.build.outputs.changed == 'true' && ( contains(inputs.docker_target,'release') || contains(inputs.docker_target,'with-browser') ) }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DOCKER_IMAGE: ghcr.io/${{ github.repository }}
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: "dist"
+          name: "dist"
+
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker Image with Browser
+        uses: docker/build-push-action@v6
+        if: ${{ contains(inputs.docker_target,'with-browser') }}
+        with:
+          push: true
+          target: with-browser
+          context: dist/${{inputs.distro_name}}_linux_amd64
+          labels: org.opencontainers.image.title:${{inputs.distro_name}}-with-browser,org.opencontainers.image.version:${{ needs.build.outputs.version}}
+          tags: ${{env.DOCKER_IMAGE}}:latest-with-browser,${{env.DOCKER_IMAGE}}:${{ needs.build.outputs.version}}-with-browser
+
+      - name: Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          target: release
+          context: dist/${{inputs.distro_name}}_linux_amd64
+          labels: org.opencontainers.image.title:${{inputs.distro_name}},org.opencontainers.image.version:${{ needs.build.outputs.version}}
+          tags: ${{env.DOCKER_IMAGE}}:latest,${{env.DOCKER_IMAGE}}:${{ needs.build.outputs.version}}
