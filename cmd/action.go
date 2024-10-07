@@ -17,6 +17,8 @@ func AddGitHubArgs(args []string, flags *pflag.FlagSet) ([]string, error) {
 		return args, nil
 	}
 
+	args = make([]string, 0)
+
 	flags.Visit(func(flag *pflag.Flag) {
 		args = ghinput(args, flag)
 	})
