@@ -7,7 +7,7 @@ branding:
   color: orange
 
 inputs:
-  in:
+  args:
     description: input file name
     required: true
 

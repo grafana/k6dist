@@ -6,40 +6,31 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/shlex"
+	"github.com/spf13/pflag"
 )
 
 // AddGitHubArgs adds GitHub input parameters as arguments.
-func AddGitHubArgs(args []string) []string {
+func AddGitHubArgs(args []string, flags *pflag.FlagSet) ([]string, error) {
 	if !isGitHubAction() {
-		return args
+		return args, nil
 	}
 
-	args = ghinput(args, "distro_name", "--distro-name")
-	args = ghinput(args, "distro_version", "--distro-version")
-	args = ghinput(args, "executable", "--executable")
-	args = ghinput(args, "archive", "--archive")
-	args = ghinput(args, "docker", "--docker")
-	args = ghinput(args, "docker_template", "--docker-template")
-	args = ghinput(args, "notes", "--notes")
-	args = ghinput(args, "notes_template", "--notes-template")
-	args = ghinput(args, "notes_latest", "--notes-latest")
-	args = ghinput(args, "readme", "--readme")
-	args = ghinput(args, "license", "--license")
-	args = ghinput(args, "platform", "--platform")
+	flags.Visit(func(flag *pflag.Flag) {
+		args = ghinput(args, flag)
+	})
 
-	if getenv("INPUT_VERBOSE", "false") == "true" {
-		args = append(args, "--verbose")
+	if iargs := os.Getenv("INPUT_ARGS"); len(iargs) > 0 { //nolint:forbidigo
+		items, err := shlex.Split(iargs)
+		if err != nil {
+			return nil, err
+		}
+
+		args = append(args, items...)
 	}
 
-	if getenv("INPUT_QUIET", "false") == "true" {
-		args = append(args, "--quiet")
-	}
-
-	if in := getenv("INPUT_IN", ""); len(in) > 0 {
-		args = append(args, in)
-	}
-
-	return args
+	return args, nil
 }
 
 //nolint:forbidigo
@@ -47,20 +38,17 @@ func isGitHubAction() bool {
 	return os.Getenv("GITHUB_ACTIONS") == "true"
 }
 
-//nolint:forbidigo
-func getenv(name string, defval string) string {
-	value, found := os.LookupEnv(name)
-	if found {
-		return value
-	}
+func ghinput(args []string, flag *pflag.Flag) []string {
+	name := "INPUT_" + strings.ToUpper(strings.ReplaceAll(flag.Name, "-", "_"))
 
-	return defval
-}
-
-func ghinput(args []string, name string, flag string) []string {
-	val := getenv("INPUT_"+strings.ToUpper(name), "")
-	if len(val) > 0 {
-		args = append(args, flag, val)
+	if val := os.Getenv(name); len(val) > 0 { //nolint:forbidigo
+		if flag.Value.Type() == "bool" {
+			if val == "true" {
+				args = append(args, "--"+flag.Name)
+			}
+		} else {
+			args = append(args, "--"+flag.Name, val)
+		}
 	}
 
 	return args
@@ -68,7 +56,7 @@ func ghinput(args []string, name string, flag string) []string {
 
 //nolint:forbidigo
 func emitOutput(changed bool, version string) error {
-	ghOutput := getenv("GITHUB_OUTPUT", "")
+	ghOutput := os.Getenv("GITHUB_OUTPUT")
 	if len(ghOutput) == 0 {
 		return nil
 	}

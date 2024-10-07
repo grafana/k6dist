@@ -30,25 +30,29 @@ func initLogging() *slog.LevelVar {
 }
 
 func main() {
-	runCmd(newCmd(getArgs(), initLogging()))
+	root, err := newCmd(os.Args[1:], initLogging()) //nolint:forbidigo
+	checkErr(err)
+	checkErr(root.Execute())
 }
 
-func newCmd(args []string, levelVar *slog.LevelVar) *cobra.Command {
-	cmd := cmd.New(levelVar)
+func newCmd(args []string, levelVar *slog.LevelVar) (*cobra.Command, error) {
+	root := cmd.New(levelVar)
 
-	cmd.Version = version
-	cmd.SetArgs(args)
+	root.Version = version
 
-	return cmd
+	args, err := cmd.AddGitHubArgs(args, root.Flags())
+	if err != nil {
+		return nil, err
+	}
+
+	root.SetArgs(args)
+
+	return root, nil
 }
 
-func runCmd(cmd *cobra.Command) {
-	if err := cmd.Execute(); err != nil {
+func checkErr(err error) {
+	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1) //nolint:forbidigo
 	}
-}
-
-func getArgs() []string {
-	return cmd.AddGitHubArgs(os.Args[1:]) //nolint:forbidigo
 }
