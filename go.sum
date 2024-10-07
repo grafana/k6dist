@@ -4,6 +4,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-task/slim-sprig/v3 v3.0.0 h1:sUs3vkvUymDpBKi3qH1YSqBQk9+9D/8M2mN1vB6EwHI=
 github.com/go-task/slim-sprig/v3 v3.0.0/go.mod h1:W848ghGpv3Qj3dhTPRyJypKRiqCdHZiAzKg9hl15HA8=
+github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 h1:El6M4kTTCOh6aBiKaUGG7oYTSPP8MxqL4YI3kZKwcP4=
+github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510/go.mod h1:pupxD2MaaD3pAXIBCelhxNneeOaAeabZDe5s4K6zSpQ=
 github.com/grafana/clireadme v0.1.0 h1:KYEYSnYdSzmHf3bufaK6fQZ5j4dzvM/T+G6Ba+qNnAM=
 github.com/grafana/clireadme v0.1.0/go.mod h1:Wy4KIG2ZBGMYAYyF9l7qAy+yoJVasqk/txsRgoRI3gc=
 github.com/grafana/k6foundry v0.2.0 h1:+aE5wuCP0XNGNsxM7UiPj9hyw4RdWeW929PuGwLWIlg=

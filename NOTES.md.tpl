@@ -1,4 +1,4 @@
-🎉 **{{.Name}}** `{{.Version}}` is here!
+🎉 {{.Name}} `{{.Version}}` is here!
 
 ## Contents
 

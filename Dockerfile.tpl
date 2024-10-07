@@ -3,7 +3,7 @@ FROM alpine:3.18 AS release
 
 RUN adduser -D -u 12345 -g 12345 k6
 
-COPY {{.Executable}} /usr/bin/k6
+COPY --chmod=755 {{.Executable}} /usr/bin/k6
 
 USER k6
 WORKDIR /home/k6
@@ -15,7 +15,7 @@ FROM release AS with-browser
 
 USER root
 
-COPY --from=release /usr/bin/k6 /usr/bin/k6
+COPY --chmod=755 --from=release /usr/bin/k6 /usr/bin/k6
 RUN apk --no-cache add chromium-swiftshader
 
 USER k6
