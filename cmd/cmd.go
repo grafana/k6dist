@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"time"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/grafana/k6dist"
 	"github.com/spf13/cobra"
 )
@@ -25,6 +25,7 @@ type options struct {
 	verbose   bool
 	single    bool
 	platforms []string
+	version   string
 }
 
 var defaultPlatforms = []string{ //nolint:gochecknoglobals
@@ -50,12 +51,12 @@ func New(levelVar *slog.LevelVar) *cobra.Command {
 			return preRun(args, levelVar, opts)
 		},
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			changed, err := run(cmd, opts)
+			changed, version, err := run(cmd, opts)
 			if err != nil {
 				return err
 			}
 
-			return emitOutput(changed, opts.Version)
+			return emitOutput(changed, version)
 		},
 	}
 
@@ -66,7 +67,7 @@ func New(levelVar *slog.LevelVar) *cobra.Command {
 	flags.SortFlags = false
 
 	flags.StringVar(&opts.Name, "distro-name", "", "distro name (default detect)")
-	flags.StringVar(&opts.Version, "distro-version", "", "distro version (default current date in YY.MM.DD format)")
+	flags.StringVar(&opts.version, "distro-version", "", "distro version (default generated)")
 	flags.StringSliceVar(&opts.platforms, "platform", defaultPlatforms, "target platforms")
 	flags.StringVar(&opts.Executable, "executable", k6dist.DefaultExecutableTemplate, "executable file name")
 	flags.StringVar(&opts.Archive, "archive", k6dist.DefaultArchiveTemplate, "archive file name")
@@ -107,8 +108,13 @@ func preRun(args []string, levelVar *slog.LevelVar, opts *options) error {
 		opts.Name = guessName(opts.Registry)
 	}
 
-	if len(opts.Version) == 0 {
-		opts.Version = defaultDate()
+	if len(opts.version) > 0 {
+		ver, err := semver.NewVersion(opts.version)
+		if err != nil {
+			return err
+		}
+
+		opts.Version = ver
 	}
 
 	if len(opts.Readme) == 0 {
@@ -133,22 +139,22 @@ func preRun(args []string, levelVar *slog.LevelVar, opts *options) error {
 	return nil
 }
 
-func run(_ *cobra.Command, opts *options) (bool, error) {
+func run(_ *cobra.Command, opts *options) (bool, *semver.Version, error) {
 	if len(opts.Name) == 0 {
 		cwd, err := os.Getwd() //nolint:forbidigo
 		if err != nil {
-			return false, err
+			return false, nil, err
 		}
 
 		opts.Name = filepath.Base(cwd)
 	}
 
-	changed, err := k6dist.Build(context.TODO(), &opts.Options)
+	changed, version, err := k6dist.Build(context.TODO(), &opts.Options)
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
-	return changed, nil
+	return changed, version, nil
 }
 
 func guessName(source string) string {
@@ -194,12 +200,6 @@ func findReadme() string {
 
 func findLicense() string {
 	return findTextFile("LICENSE")
-}
-
-func defaultDate() string {
-	now := time.Now()
-
-	return now.Format("06.01.02")
 }
 
 func parsePlatforms(values []string) ([]*k6dist.Platform, error) {

@@ -4,10 +4,6 @@
 # A new release is made if a new version of k6 or one or more of the extensions
 # has been released since the last distribution release.
 #
-# The distro release workflow should be scheduled once a day.
-# More than one distribution release cannot be made in one day,
-# because the release version is the date.
-#
 # Usage
 # -----
 #
@@ -21,7 +17,7 @@
 # ```
 # on:
 #  schedule:
-#    - cron: "0 0 * * *"
+#    - cron: "10 */2 * * *"
 #
 # jobs:
 #  distro:
@@ -134,17 +130,12 @@ jobs:
       - name: Latest Release Notes
         id: latest
         run: |
-          if gh api /repos/${{github.repository}}/releases/tag/$(date +%y.%m.%d) > /dev/null 2>/dev/null; then
-             echo "today=true" >> "$GITHUB_OUTPUT"
-          else
-            if gh api --jq .body /repos/${{github.repository}}/releases/latest  > ${{env.NOTES_LATEST}}  2>/dev/null; then
-             echo "notes=${{env.NOTES_LATEST}}" >> "$GITHUB_OUTPUT"
-            fi
+          if gh api --jq .body /repos/${{github.repository}}/releases/latest  > ${{env.NOTES_LATEST}}  2>/dev/null; then
+            echo "notes=${{env.NOTES_LATEST}}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build Distro
-        uses: grafana/k6dist@v0.1.7
-        if: ${{ steps.latest.outputs.today != 'true' }}
+        uses: grafana/k6dist@v0.1.8
         id: build
         with:
           args: "${{ inputs.args }}"

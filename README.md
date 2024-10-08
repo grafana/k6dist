@@ -107,7 +107,7 @@ k6dist [flags] [registry-location]
 
 ```
       --distro-name string       distro name (default detect)
-      --distro-version string    distro version (default current date in YY.MM.DD format)
+      --distro-version string    distro version (default generated)
       --platform strings         target platforms (default [linux/amd64,darwin/amd64,windows/amd64])
       --executable string        executable file name (default "dist/{{.Name}}_{{.OS}}_{{.Arch}}/k6{{.ExeExt}}")
       --archive string           archive file name (default "dist/{{.Name}}_{{.Version}}_{{.OS}}_{{.Arch}}{{.ZipExt}}")

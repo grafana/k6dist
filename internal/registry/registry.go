@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/Masterminds/semver/v3"
 )
 
 // ToModules creates a module list from the registry.
@@ -107,28 +109,92 @@ func loadRegistryHTTP(ctx context.Context, source string) (Registry, error) {
 	return reg, nil
 }
 
+type bumpType int
+
+const (
+	bumpNone bumpType = iota
+	bumpPatch
+	bumpMinor
+	bumpMajor
+)
+
+func (b bumpType) max(val bumpType) bumpType {
+	if val > b {
+		return val
+	}
+
+	return b
+}
+
+func (b bumpType) apply(version *semver.Version) *semver.Version {
+	var ver semver.Version
+
+	switch b {
+	case bumpMajor:
+		ver = version.IncMajor()
+	case bumpMinor:
+		ver = version.IncMinor()
+	case bumpPatch:
+		ver = version.IncPatch()
+	case bumpNone:
+		fallthrough
+	default:
+		return version
+	}
+
+	return &ver
+}
+
+func detectBump(current, previous string) bumpType {
+	curr, err := semver.NewVersion(current)
+	if err != nil {
+		return bumpNone
+	}
+
+	prev, err := semver.NewVersion(previous)
+	if err != nil {
+		return bumpNone
+	}
+
+	if curr.Equal(prev) {
+		return bumpNone
+	}
+
+	if curr.Major() != prev.Major() {
+		return bumpMajor
+	}
+
+	if curr.Minor() != prev.Minor() {
+		return bumpMinor
+	}
+
+	if curr.Patch() != prev.Patch() {
+		return bumpPatch
+	}
+
+	return bumpNone
+}
+
 // AddLatest adds latest versions to extensions.
-func (reg Registry) AddLatest(modules Modules) bool {
+func (reg Registry) AddLatest(modules Modules, version *semver.Version) *semver.Version {
 	regAsMap := make(map[string]*Extension, len(reg))
 
 	for idx := range reg {
 		regAsMap[reg[idx].Module] = &reg[idx]
 	}
 
-	changed := false
+	bump := bumpNone
 
 	for _, mod := range modules {
 		ext, found := regAsMap[mod.Path]
-		if found {
-			ext.Versions[1] = mod.Version
-			changed = changed || (ext.Versions[0] != mod.Version)
+		if !found { // module removed
+			bump = bump.max(bumpMajor)
+			continue
 		}
 
-		changed = changed || !found
-	}
+		ext.Versions[1] = mod.Version
 
-	if changed {
-		return true
+		bump = bump.max(detectBump(ext.Versions[0], ext.Versions[1]))
 	}
 
 	modulesAsMap := make(map[string]*Module, len(modules))
@@ -138,10 +204,10 @@ func (reg Registry) AddLatest(modules Modules) bool {
 	}
 
 	for _, ext := range reg {
-		if _, found := modulesAsMap[ext.Module]; !found {
-			return true
+		if _, found := modulesAsMap[ext.Module]; !found { // module added
+			bump = bump.max(bumpMinor)
 		}
 	}
 
-	return false
+	return bump.apply(version)
 }
