@@ -143,7 +143,7 @@ jobs:
           fi
 
       - name: Build Distro
-        uses: grafana/k6dist@v0.1.5
+        uses: grafana/k6dist@v0.1.6
         if: ${{ steps.latest.outputs.today != 'true' }}
         id: build
         with:
