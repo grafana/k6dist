@@ -139,7 +139,7 @@ func (reg Registry) AddLatest(modules Modules) bool {
 
 	for _, ext := range reg {
 		if _, found := modulesAsMap[ext.Module]; !found {
-			panic("ok")
+			return true
 		}
 	}
 
