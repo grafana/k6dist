@@ -109,16 +109,16 @@ func loadRegistryHTTP(ctx context.Context, source string) (Registry, error) {
 
 // AddLatest adds latest versions to extensions.
 func (reg Registry) AddLatest(modules Modules) bool {
-	dict := make(map[string]*Extension, len(reg))
+	regAsMap := make(map[string]*Extension, len(reg))
 
 	for idx := range reg {
-		dict[reg[idx].Module] = &reg[idx]
+		regAsMap[reg[idx].Module] = &reg[idx]
 	}
 
 	changed := false
 
 	for _, mod := range modules {
-		ext, found := dict[mod.Path]
+		ext, found := regAsMap[mod.Path]
 		if found {
 			ext.Versions[1] = mod.Version
 			changed = changed || (ext.Versions[0] != mod.Version)
@@ -127,5 +127,21 @@ func (reg Registry) AddLatest(modules Modules) bool {
 		changed = changed || !found
 	}
 
-	return changed
+	if changed {
+		return true
+	}
+
+	modulesAsMap := make(map[string]*Module, len(modules))
+
+	for idx := range modules {
+		modulesAsMap[modules[idx].Path] = &modules[idx]
+	}
+
+	for _, ext := range reg {
+		if _, found := modulesAsMap[ext.Module]; !found {
+			panic("ok")
+		}
+	}
+
+	return false
 }
