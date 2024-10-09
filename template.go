@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"text/template"
 
+	"github.com/Masterminds/semver/v3"
 	sprig "github.com/go-task/slim-sprig/v3"
 
 	"github.com/grafana/k6dist/internal/registry"
@@ -27,7 +28,7 @@ type releaseData struct {
 	Footer   string
 }
 
-func newInstsanceData(name, version string, platform *Platform) *instanceData {
+func newInstsanceData(name string, version *semver.Version, platform *Platform) *instanceData {
 	exe := ""
 	zip := ".tar.gz"
 
@@ -38,7 +39,7 @@ func newInstsanceData(name, version string, platform *Platform) *instanceData {
 
 	return &instanceData{
 		Name:    name,
-		Version: version,
+		Version: version.Original(),
 		OS:      platform.OS,
 		Arch:    platform.Arch,
 		ExeExt:  exe,
@@ -46,13 +47,13 @@ func newInstsanceData(name, version string, platform *Platform) *instanceData {
 	}
 }
 
-func newReleaseData(name, version string, reg registry.Registry) (*releaseData, error) {
-	footer, err := notesFooter(reg)
+func newReleaseData(name string, version *semver.Version, reg registry.Registry) (*releaseData, error) {
+	footer, err := notesFooter(version, reg)
 	if err != nil {
 		return nil, err
 	}
 
-	return &releaseData{Name: name, Version: version, Registry: reg, Footer: footer}, nil
+	return &releaseData{Name: name, Version: version.Original(), Registry: reg, Footer: footer}, nil
 }
 
 func expandTemplate(name string, tmplsrc string, data interface{}) (string, error) {

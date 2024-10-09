@@ -11,30 +11,35 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/grafana/k6dist/internal/registry"
 	"github.com/grafana/k6foundry"
 )
 
-func detectChange(registry registry.Registry, latest string) (bool, error) {
+var initialVersion = semver.MustParse("v0.1.0") //nolint:gochecknoglobals
+
+func detectChange(reg registry.Registry, latest string) (bool, *semver.Version, error) {
 	if len(latest) == 0 {
-		return true, nil
+		return true, initialVersion, nil
 	}
 
 	contents, err := os.ReadFile(filepath.Clean(latest)) //nolint:forbidigo
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
-	found, modules, err := parseNotes(contents)
+	found, version, modules, err := parseNotes(contents)
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
 	if !found {
-		return false, nil
+		return true, initialVersion, nil
 	}
 
-	return registry.AddLatest(modules), nil
+	bumped := reg.AddLatest(modules, version)
+
+	return !bumped.Equal(version), bumped, nil
 }
 
 func newBuilder(ctx context.Context, modules registry.Modules) (k6foundry.Builder, error) {
@@ -58,35 +63,39 @@ func newBuilder(ctx context.Context, modules registry.Modules) (k6foundry.Builde
 }
 
 // Build builds k6 binaries and archives based on opts parameter.
-func Build(ctx context.Context, opts *Options) (bool, error) {
+func Build(ctx context.Context, opts *Options) (bool, *semver.Version, error) {
 	opts.setDefaults()
 
 	registry, err := registry.LoadRegistry(ctx, opts.Registry)
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
-	changed, err := detectChange(registry, opts.NotesLatest)
+	changed, version, err := detectChange(registry, opts.NotesLatest)
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
 	if !changed {
-		return false, nil
+		return false, nil, nil
 	}
 
-	notes, err := expandNotes(opts.Name, opts.Version, registry, opts.NotesTemplate)
-	if err != nil {
-		return false, err
+	if opts.Version != nil {
+		version = opts.Version
 	}
 
-	filename, err := expandAsTargetPath("notes", opts.Notes, newInstsanceData(opts.Name, opts.Version, &Platform{}))
+	notes, err := expandNotes(opts.Name, version, registry, opts.NotesTemplate)
 	if err != nil {
-		return false, err
+		return false, nil, err
+	}
+
+	filename, err := expandAsTargetPath("notes", opts.Notes, newInstsanceData(opts.Name, version, &Platform{}))
+	if err != nil {
+		return false, nil, err
 	}
 
 	if err := os.WriteFile(filename, []byte(notes), 0o600); err != nil { //nolint:forbidigo
-		return false, err
+		return false, nil, err
 	}
 
 	modules := registry.ToModules()
@@ -94,39 +103,39 @@ func Build(ctx context.Context, opts *Options) (bool, error) {
 
 	builder, err := newBuilder(ctx, modules)
 	if err != nil {
-		return false, err
+		return false, nil, err
 	}
 
 	for _, platform := range opts.Platforms {
-		data := newInstsanceData(opts.Name, opts.Version, platform)
+		data := newInstsanceData(opts.Name, version, platform)
 
 		filename, err := expandAsTargetPath("executable", opts.Executable, data)
 		if err != nil {
-			return false, err
+			return false, nil, err
 		}
 
 		err = buildExecutable(ctx, builder, platform, k6Version, mods, filename)
 		if err != nil {
-			return false, err
+			return false, nil, err
 		}
 
 		err = createDockerfile(filename, opts.DockerfileTemplate, opts.Dockerfile)
 		if err != nil {
-			return false, err
+			return false, nil, err
 		}
 
 		archive, err := expandAsTargetPath("archive", opts.Archive, data)
 		if err != nil {
-			return false, err
+			return false, nil, err
 		}
 
 		err = buildArchive(archive, filename, opts.Readme, opts.License)
 		if err != nil {
-			return false, err
+			return false, nil, err
 		}
 	}
 
-	return true, nil
+	return true, version, nil
 }
 
 func buildExecutable(

@@ -3,6 +3,8 @@ package k6dist
 
 import (
 	"runtime"
+
+	"github.com/Masterminds/semver/v3"
 )
 
 // Options contains the optional parameters of the Build function.
@@ -11,8 +13,7 @@ type Options struct {
 	// Templating is not supported.
 	Name string
 	// Version contains distribution version.
-	// Templating is not supported.
-	Version string
+	Version *semver.Version
 	// Executable is the name of the k6 executable file to be built.
 	// Templating is supported.
 	// It defaults to DefaultExecutableTemplate.

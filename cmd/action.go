@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/google/shlex"
 	"github.com/spf13/pflag"
 )
@@ -57,7 +58,7 @@ func ghinput(args []string, flag *pflag.Flag) []string {
 }
 
 //nolint:forbidigo
-func emitOutput(changed bool, version string) error {
+func emitOutput(changed bool, version *semver.Version) error {
 	ghOutput := os.Getenv("GITHUB_OUTPUT")
 	if len(ghOutput) == 0 {
 		return nil
@@ -75,11 +76,13 @@ func emitOutput(changed bool, version string) error {
 		return err
 	}
 
-	slog.Debug("Emit version", "version", version)
+	if version != nil {
+		slog.Debug("Emit version", "version", version.Original())
 
-	_, err = fmt.Fprintf(file, "version=%s\n", version)
-	if err != nil {
-		return err
+		_, err = fmt.Fprintf(file, "version=%s\n", version.Original())
+		if err != nil {
+			return err
+		}
 	}
 
 	return file.Close()

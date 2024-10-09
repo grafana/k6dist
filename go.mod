@@ -3,6 +3,7 @@ module github.com/grafana/k6dist
 go 1.22.4
 
 require (
+	github.com/Masterminds/semver/v3 v3.3.0
 	github.com/go-task/slim-sprig/v3 v3.0.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	github.com/grafana/clireadme v0.1.0

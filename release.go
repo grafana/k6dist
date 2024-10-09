@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/grafana/k6dist/internal/registry"
 )
 
@@ -19,7 +20,12 @@ const (
 	notesFooterEnd   = "```-->"
 )
 
-func notesFooter(registry registry.Registry) (string, error) {
+type footerData struct {
+	Version string           `json:"version,omitempty"`
+	Modules registry.Modules `json:"modules,omitempty"`
+}
+
+func notesFooter(version *semver.Version, registry registry.Registry) (string, error) {
 	var buff bytes.Buffer
 
 	buff.WriteString(notesFooterBegin)
@@ -29,7 +35,9 @@ func notesFooter(registry registry.Registry) (string, error) {
 
 	encoder.SetEscapeHTML(false)
 
-	if err := encoder.Encode(registry.ToModules()); err != nil {
+	data := &footerData{Version: version.Original(), Modules: registry.ToModules()}
+
+	if err := encoder.Encode(data); err != nil {
 		return "", err
 	}
 
@@ -39,7 +47,7 @@ func notesFooter(registry registry.Registry) (string, error) {
 	return buff.String(), nil
 }
 
-func expandNotes(name, version string, reg registry.Registry, tmplfile string) (string, error) {
+func expandNotes(name string, version *semver.Version, reg registry.Registry, tmplfile string) (string, error) {
 	var tmplsrc string
 
 	if len(tmplfile) != 0 {
@@ -61,20 +69,25 @@ func expandNotes(name, version string, reg registry.Registry, tmplfile string) (
 	return expandTemplate("notes", tmplsrc, data)
 }
 
-var reModules = regexp.MustCompile("(?ms:^" + notesFooterBegin + "(?P<modules>.*)" + notesFooterEnd + ")")
+var reModules = regexp.MustCompile("(?ms:^" + notesFooterBegin + "(?P<state>.*)" + notesFooterEnd + ")")
 
-func parseNotes(notes []byte) (bool, registry.Modules, error) {
+func parseNotes(notes []byte) (bool, *semver.Version, registry.Modules, error) {
 	match := reModules.FindSubmatch(notes)
 
 	if match == nil {
-		return false, nil, nil
+		return false, nil, nil, nil
 	}
 
-	var modules registry.Modules
+	var data footerData
 
-	if err := json.Unmarshal(match[reModules.SubexpIndex("modules")], &modules); err != nil {
-		return false, nil, err
+	if err := json.Unmarshal(match[reModules.SubexpIndex("state")], &data); err != nil {
+		return false, nil, nil, err
 	}
 
-	return true, modules, nil
+	version, err := semver.NewVersion(data.Version)
+	if err != nil {
+		return false, nil, nil, err
+	}
+
+	return true, version, data.Modules, nil
 }
