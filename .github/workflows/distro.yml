@@ -60,7 +60,7 @@ on:
         description: list of target platforms
         type: string
         required: false
-        default: "linux/amd64,darwin/amd64,windows/amd64"
+        default: "linux/amd64,linux/arm64,darwin/amd64,windows/amd64"
 
       docker_template:
         description: template for the generated Dockerfile
