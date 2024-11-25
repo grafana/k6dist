@@ -151,7 +151,7 @@ func buildExecutable(
 		return err
 	}
 
-	err = builder.Build(
+	_, err = builder.Build(
 		ctx,
 		k6foundry.NewPlatform(platform.OS, platform.Arch),
 		k6Version,

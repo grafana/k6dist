@@ -7,7 +7,7 @@ require (
 	github.com/go-task/slim-sprig/v3 v3.0.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	github.com/grafana/clireadme v0.1.0
-	github.com/grafana/k6foundry v0.2.0
+	github.com/grafana/k6foundry v0.3.0
 	github.com/samber/slog-logrus/v2 v2.5.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.1
@@ -18,7 +18,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/samber/lo v1.44.0 // indirect
 	github.com/samber/slog-common v0.17.0 // indirect
-	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 )
