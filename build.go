@@ -151,9 +151,13 @@ func buildExecutable(
 		return err
 	}
 
+	foundryPlatform, err := k6foundry.NewPlatform(platform.OS, platform.Arch)
+	if err != nil {
+		return err
+	}
 	_, err = builder.Build(
 		ctx,
-		k6foundry.NewPlatform(platform.OS, platform.Arch),
+		foundryPlatform,
 		k6Version,
 		mods,
 		[]string{`-ldflags`, `-s -w`},
