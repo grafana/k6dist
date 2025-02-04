@@ -42,15 +42,15 @@ func detectChange(reg registry.Registry, latest string) (bool, *semver.Version, 
 	return !bumped.Equal(version), bumped, nil
 }
 
-func newBuilder(ctx context.Context, modules registry.Modules) (k6foundry.Builder, error) {
+func newBuilder(ctx context.Context, modules registry.Modules) (k6foundry.Foundry, error) {
 	cgo := "0"
 	if modules.Cgo() {
 		cgo = "1"
 	}
 
-	return k6foundry.NewNativeBuilder(
+	return k6foundry.NewNativeFoundry(
 		ctx,
-		k6foundry.NativeBuilderOpts{
+		k6foundry.NativeFoundryOpts{
 			Logger: slog.Default(),
 			Stdout: os.Stdout, //nolint:forbidigo
 			Stderr: os.Stderr, //nolint:forbidigo
@@ -140,7 +140,7 @@ func Build(ctx context.Context, opts *Options) (bool, *semver.Version, error) {
 
 func buildExecutable(
 	ctx context.Context,
-	builder k6foundry.Builder,
+	foundry k6foundry.Foundry,
 	platform *Platform,
 	k6Version string,
 	mods []k6foundry.Module,
@@ -151,11 +151,16 @@ func buildExecutable(
 		return err
 	}
 
-	_, err = builder.Build(
+	foundryPlatform, err := k6foundry.ParsePlatform(platform.String())
+	if err != nil {
+		return err
+	}
+	_, err = foundry.Build(
 		ctx,
-		k6foundry.NewPlatform(platform.OS, platform.Arch),
+		foundryPlatform,
 		k6Version,
 		mods,
+		[]k6foundry.Module{},
 		[]string{`-ldflags`, `-s -w`},
 		file,
 	)
