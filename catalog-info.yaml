@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: k6dist
+  title: k6dist
+  description: |
+    k6dist is a CLI tool and a GitHub Action that allows you to build k6 distributions with extensions.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: grafana/k6dist
+spec:
+  type: tool
+  owner: group:default/k6-extensions
+  lifecycle: production
