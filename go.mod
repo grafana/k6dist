@@ -7,7 +7,7 @@ require (
 	github.com/go-task/slim-sprig/v3 v3.0.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	github.com/grafana/clireadme v0.1.0
-	github.com/grafana/k6foundry v0.4.5
+	github.com/grafana/k6foundry v0.4.6
 	github.com/samber/slog-logrus/v2 v2.5.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.9.1
